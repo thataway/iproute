@@ -3,8 +3,6 @@ package route
 import (
 	"bytes"
 	"context"
-	_ "embed"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net"
@@ -24,7 +22,8 @@ import (
 	"github.com/thataway/common-lib/pkg/slice"
 	"github.com/thataway/common-lib/server"
 	intNet "github.com/thataway/iproute/internal/pkg/net"
-	"github.com/thataway/iproute/pkg/route"
+	apiUtils "github.com/thataway/protos/pkg/api"
+	"github.com/thataway/protos/pkg/api/route"
 	"github.com/vishvananda/netlink"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -34,14 +33,6 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
-
-//GetSwaggerDocs get swagger spec docs
-func GetSwaggerDocs() (*server.SwaggerSpec, error) {
-	const api = "route/GetSwaggerDocs"
-	ret := new(server.SwaggerSpec)
-	err := json.Unmarshal(rawSwagger, ret)
-	return ret, errors.Wrap(err, api)
-}
 
 //NewRouteService creates roure service
 func NewRouteService(ctx context.Context) server.APIService {
@@ -60,8 +51,8 @@ var (
 	_ server.APIService        = (*routeService)(nil)
 	_ server.APIGatewayProxy   = (*routeService)(nil)
 
-	//go:embed route.swagger.json
-	rawSwagger []byte
+	//GetSwaggerDocs get swagger spec docs
+	GetSwaggerDocs = apiUtils.Route.LoadSwagger
 )
 
 const (

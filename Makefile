@@ -88,31 +88,6 @@ endif
 	@echo "" > /dev/null
 
 
-
-.PHONY: generate
-generate: bin-tools
-	@echo "Generate API from proto"
-	@PATH=$(PATH):$(GOBIN) && \
-	protoc -I $(CURDIR)/vendor/github.com/grpc-ecosystem/grpc-gateway/v2/ \
-		-I $(CURDIR)/3d-party \
-		-I /usr/local/include \
-		--go_opt=paths=source_relative \
-		--go-grpc_opt=paths=source_relative \
-		--go_out $(CURDIR)/pkg \
-		--go-grpc_out $(CURDIR)/pkg \
-		--proto_path=$(CURDIR)/api \
-		--grpc-gateway_out $(CURDIR)/pkg \
-		--grpc-gateway_opt logtostderr=true \
-		--grpc-gateway_opt standalone=false \
-		route/route.proto && \
-	protoc -I $(CURDIR)/vendor/github.com/grpc-ecosystem/grpc-gateway/v2/ \
-		-I $(CURDIR)/3d-party \
-		-I /usr/local/include \
-		--proto_path=$(CURDIR)/api \
-		--openapiv2_out $(CURDIR)/internal/api \
-		--openapiv2_opt logtostderr=true \
-		route/route.proto
-
 .PHONY: test
 test:
 	$(info Running tests...)
